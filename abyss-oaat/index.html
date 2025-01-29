@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="en"><head><title>Abyss-OAAT: The Fastest 32-Bit OAAT Hashing Algorithm</title><link href="https://abyssresearch.github.io/abyss-oaat/" rel="canonical"><link href="/favicon.ico" rel="icon" type="image/x-icon"><meta content="initial-scale=1,width=device-width" name="viewport"><meta charset="utf-8"><style type="text/css">a{color:#000;font-weight:bold;letter-spacing:-0.2px;text-decoration:none;}body,html{background:#fff;color:#000;font-family:sans-serif;font-size:14px;font-weight:normal;line-height:25px;margin:0;overflow-x:hidden;width:100%;}code{background:#f1f1f1;border-radius:4px;box-sizing:border-box;color:#333;display:inline-block;font-family:monospace;font-size:12px;font-weight:normal;height:auto;letter-spacing:-0.2px;line-height:19px;margin:8px 0 17px;overflow-x:scroll;padding:28px 31px 25px;white-space:pre;width:100%}footer{display:inline-block;margin:100px 0;width:100%;}footer ul{display:inline-block;}footer ul{margin:0 0 55px;padding:0;width:100%;}footer ul li{display:inline-block;float:left;line-height:18px;margin:0 15px 5px 0;}footer ul li a{font-size:12px;float:left;}footer .social-media a{display:block;float:left;}footer .social-media a img{height:16px;float:left;}h1,h2,h3{display:inline-block;font-weight:normal;text-transform:uppercase;width:100%;}h1{font-size:23px;letter-spacing:-0.9px;line-height:32px;margin:-6px 0 34px;word-spacing:1.4px;}h2{font-size:19px;letter-spacing:-0.6px;line-height:42px;margin:0 0 24px;padding-top:18px;}h3{font-size:14px;letter-spacing:-0.3px;margin:10px 0 20px;}p{box-sizing:border-box;color:#555;display:inline-block;margin:0 0 17px;width:100%;}p .code{background:#f1f1f1;border-radius:4px;color:#333;display:inline-block;font-family:monospace;font-size:12px;font-weight:normal;letter-spacing:-0.2px;line-height:18px;margin:2px 1px;padding:4px 7px 0;}.icon{float:left;line-height:32px;}.icon img{float:left;height:32px;margin-right:15px;}.no-margin-bottom{margin-bottom:0 !important;}.no-margin-left{margin-left:0 !important;}.no-margin-top{margin-top:0 !important;}.section{margin-bottom:40px;position:relative;}</style></head><body><div style="box-sizing:border-box;margin:0 auto;max-width:720px;padding:0 25px;width:100%;"><header style="display:inline-block;padding:105px 0 70px;width:100%;"><a class="icon" href="/"><img src="/icon.jpg">AbyssResearch</a></header><main style="min-height:280px;width:100%;"><h1>Abyss-OAAT: The Fastest 32-Bit OAAT Hashing Algorithm With Good Quality</h1><div class="section"><p class="no-margin-bottom"><a href="https://github.com/abyssresearch/abyss-oaat">Abyss-OAAT</a> is a tiny 32-bit OAAT hashing algorithm as a substantial improvement to 32-bit FNV-1a, Jenkin's OAAT, MicroOAAT and MurmurOAAT.</p></div><div class="section"><h2>Library</h2><h3 class="no-margin-top">Source</h3><p class="no-margin-bottom"><a href="https://raw.githubusercontent.com/abyssresearch/abyss-oaat/refs/heads/master/abyss_oaat.c">abyss_oaat.c</a></p><p><a href="https://raw.githubusercontent.com/abyssresearch/abyss-oaat/refs/heads/master/abyss_oaat.h">abyss_oaat.h</a></p><h3>Reference</h3><p><span class="code">abyss_oaat()</span> is the all-at-once hashing function that accepts the 2 following arguments in left-to-right order.</p><p>1: <span class="code">input_count</span> is the <span class="code">const unsigned long</span> count of elements in the <span class="code">input</span> array.</p><p>2: <span class="code">input</span> is the <span class="code">const uint8_t</span> array to hash.</p><p>The return value data type is <span class="code">uint32_t</span>.</p><p>It returns the 32-bit unsigned integer hash digest result.</p><p><span class="code no-margin-left">abyss_oaat_initialize()</span> is the initialization function that accepts the following argument.</p><p>1: <span class="code">s</span> is the <span class="code">struct abyss_oaat_s</span> pointer.</p><p><span class="code no-margin-left">abyss_oaat_transform()</span> is the core hashing loop function that accepts the 4 following arguments in left-to-right order.</p><p>1: <span class="code">i</span> is the <span class="code">unsigned long</span> starting index position of elements in the <span class="code">input</span> array.</p><p>2: <span class="code">input_count</span> is the <span class="code">const unsigned long</span> count of elements in the <span class="code">input</span> array.</p><p>3: <span class="code">input</span> is the <span class="code">const uint8_t</span> array to hash.</p><p>4: <span class="code">s</span> is the <span class="code">struct abyss_oaat_s</span> pointer.</p><p><span class="code no-margin-left">abyss_oaat_finalize()</span> is the finalization function that accepts the following argument.</p><p>1: <span class="code">s</span> is the <span class="code">struct abyss_oaat_s</span> pointer. <span class="code">s.mix</span> contains the finalized hash digest result.</p><p>The return value data type is <span class="code">void</span>.</p><h3>Example</h3><code>#include &lt;stdio.h&gt;
+#include "abyss_oaat.h"
+
+int main(void) {
+  struct abyss_oaat_s s;
+  uint8_t input[8] = {'m', 'e', 's', 's', 'a', 'g', 'e', 0};
+  unsigned char i = 0;
+
+  while (i != 10) {
+    i++;
+    printf("All-at-once result %u is 0x%08x.\n", i, abyss_oaat(8, input));
+    input[7]++;
+  }
+
+  input[7] = 0;
+  i = 0;
+
+  while (i != 10) {
+    i++;
+    abyss_oaat_initialize(&s);
+    abyss_oaat_transform(0, 8, input, &s);
+    abyss_oaat_finalize(&s);
+    input[7]++;
+    printf("Segmented result %u is 0x%08x.\n", i, s.mix);
+  }
+
+  return 0;
+}</code><h3>Requirements</h3><p class="no-margin-bottom">It adheres to the C99 standard draft (ISO/IEC 9899:1999), although it's convertible to other programming languages and standards.</p></div><div class="no-margin-bottom section"><h2>Explanation</h2><p>Abyss-OAAT hashes 32-bit keys in data structures in place of existing implementations that forbid multi-byte memory reading.</p><p>It's a lossless performance and statistical quality improvement for all input sizes larger than 3 bytes.</p><p>Input sizes less than or equal to 3 bytes are slower by a small margin with higher statistical quality.</p><p>It's portable for both 32-bit and 64-bit systems.</p><p>It meets strict compliance, portability and code security requirements.</p><p>It doesn't use modulus, multiplication or division arithmetic operations.</p><p>The core hashing loop structure appears similar to MicroOAAT due to the limited options when designing the fastest non-multiplicative, one-at-a-time hashing function with good collision avoidance, but the technical difference is vast.</p><p>It uses a XOR assignment operation for each input byte instead of an addition assignment, similar to FNV-1a. The remaining operations emulate multiplication before finalizing with enhanced bit distribution.</p><p>Any bitwise multiplication with a left shift operand greater than <span class="code"><< 3</span> is too slow in the core hashing loop and anything less doesn't result in enough distribution to omit a second bitwise multiplication.</p><p>It left-rotates bits in <span class="code">mix_offset</span> instead of right-rotating bits in <span class="code">mix</span>.</p><p><span class="code">mix_offset</span> combines with <span class="code">mix</span> using addition instead of subtraction to keep bits rolling in the same direction.</p><p>Furthermore, the bit rotation is non-blocking with instruction-level parallelism for each next byte iteration.</p><p>The speed gains from these design differences allow for a minimal finalization sequence with finely-tuned shift values and additive bit rotations in both directions.</p><p>The result deprecates the usage of 32-bit FNV-1a, Jenkin's OAAT, MicroOAAT and MurmurOAAT by comparison in most practical instances. There are significant improvements across all SMHasher tests with no critical collision vulnerabilities relative to the compared hashing algorithms.</p><p>Seed tests in SMHasher are omitted to both discourage using hashing algorithms as PRNGs and prevent collision vulnerabilities from 2³² different initialized states.</p><p>The strict avalanche test in SMHasher is omitted as it's only relevant to the analysis of cryptographic hash function properties where the worst instance exposes a critical cryptographic vulnerability.</p><p>Furthermore, the following code tests collision counts for truncated digests against each of the 8 bits flipped within a single input byte ranging from 1 to 255 at all positions for all <span class="code">input_count</span> values ranging from 1 to 256.</p><code>#include &lt;stdio.h&gt;
+#include "abyss_oaat.h"
+
+int main(void) {
+  uint8_t input[256];
+  uint32_t result = 0;
+  uint32_t result_flipped = 1;
+  unsigned long bit_collisions_counts[32];
+  unsigned short sparse_byte = 0;
+  unsigned short i = 0;
+  unsigned short j = 0;
+  unsigned short k = 0;
+  unsigned short l = 0;
+  unsigned short m = 0;
+
+  while (i != 32) {
+    bit_collisions_counts[i] = 0;
+    i++;
+  }
+
+  i = 1;
+
+  while (sparse_byte != 16) {
+    while (i != 256) {
+      j = 1;
+
+      while (j != 256) {
+        k = 0;
+
+        while (k != j) {
+          while (l != j) {
+            input[l] = sparse_byte;
+            l++;
+          }
+
+          if (sparse_byte == i) {
+            k = j;
+            l = 0;
+            continue;
+          }
+
+          input[k] = i;
+          result = abyss_oaat(j, input);
+          l = 0;
+
+          while (l != 8) {
+            input[k] = input[k] ^ (1 << l);
+            result_flipped = abyss_oaat(j, input);
+            input[k] = input[k] ^ (1 << l);
+            m = 1;
+
+            while (m != 32) {
+              if (
+                (result & ((2 << m) - 1)) == (result_flipped & ((2 << m) - 1))
+              ) {
+                bit_collisions_counts[m - 1]++;
+              }
+
+              m++;
+            }
+
+            l++;
+            m = 0;
+          }
+
+          k++;
+          l = 0;
+        }
+
+        j++;
+        k = 0;
+      }
+
+      i++;
+    }
+
+    sparse_byte++;
+    i = 1;
+  }
+
+  i = 2;
+  j = 0;
+
+  while (i != 33) {
+    printf("%2u-Bit Segmented Collisions: %9lu\n",
+           i,
+           bit_collisions_counts[i - 2]);
+    i++;
+    j++;
+  }
+
+  return 0;
+}</code><p>The following collision results demonstrate a sufficient collision-based avalanche effect in the worst instance with non-cryptographic, universal hashing relevance.</p><code> 2-Bit Segmented Collisions: 268422364
+ 3-Bit Segmented Collisions: 136568989
+ 4-Bit Segmented Collisions:  69294412
+ 5-Bit Segmented Collisions:  34875523
+ 6-Bit Segmented Collisions:  17265466
+ 7-Bit Segmented Collisions:   8343604
+ 8-Bit Segmented Collisions:   4141758
+ 9-Bit Segmented Collisions:   2065115
+10-Bit Segmented Collisions:   1022555
+11-Bit Segmented Collisions:    509805
+12-Bit Segmented Collisions:    253307
+13-Bit Segmented Collisions:    126814
+14-Bit Segmented Collisions:     62568
+15-Bit Segmented Collisions:     31040
+16-Bit Segmented Collisions:     15333
+17-Bit Segmented Collisions:      7648
+18-Bit Segmented Collisions:      3715
+19-Bit Segmented Collisions:      1871
+20-Bit Segmented Collisions:       918
+21-Bit Segmented Collisions:       472
+22-Bit Segmented Collisions:       211
+23-Bit Segmented Collisions:       109
+24-Bit Segmented Collisions:        65
+25-Bit Segmented Collisions:        27
+26-Bit Segmented Collisions:         8
+27-Bit Segmented Collisions:         6
+28-Bit Segmented Collisions:         2
+29-Bit Segmented Collisions:         0
+30-Bit Segmented Collisions:         0
+31-Bit Segmented Collisions:         0
+32-Bit Segmented Collisions:         0</code><p>0 32-bit collisions out of 125 million groups of 8 single-bit flip tests proves the worst instances are rare enough to be considered random occurrences in practical implementations.</p><p>The semi-linear collision increments after each truncation are within an acceptable range based on the probability of collisions at each bit size. For example, 200-300 million collisions in the lower 2 bits are expected out of 1 billion total keys, but only up to a few are expected in the full 32 bits.</p><p>Compared to 32-bit FNV-1a, it's 53% faster on average for small inputs and up to 70% faster on average for large inputs.</p><p>Compared to Jenkin's OAAT, it's 110% faster on average for small inputs and up to 112% faster on average for large inputs.</p><p>Compared to MicroOAAT, it's 13% faster on average for small inputs and up to 45% faster on average for large inputs.</p><p>Compared to MurmurOAAT, it's 88% faster on average for small inputs and up to 145% faster on average for large inputs.</p><p>In the instances when multi-byte memory reading is permitted and byte order isn't expected to change during runtime, <a href="/abyss-hash-32/">Abyss-Hash-32</a> is a faster alternative.</p><p class="no-margin-bottom">All speed tests are performed locally on a Pixelbook Go M3 using Debian.</p></div></main><footer><div class="no-margin-bottom"><ul><li><a href="/contact/">Contact</a></li><li><a href="/#publications">Publications</a></li></ul><ul class="social-media"><li><a href="https://github.com/abyssresearch"><img src="/icon-github.jpg"></a></li></ul><p style="color:#888;font-size:12px;line-height:19px;margin:0;">All external mentions of AbyssResearch and associated intellectual property may contain either fraudulent claims or outdated content, especially when referencing subject matter not contained herein.</p></div></footer></div></body></html>
