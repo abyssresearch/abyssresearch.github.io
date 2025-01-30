@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="en"><head><title>Abyss-Sort-Unstable: The Fastest Shell Sort Gap Sequence</title><link href="https://abyssresearch.github.io/abyss-sort-unstable/" rel="canonical"><link href="/favicon.ico" rel="icon" type="image/x-icon"><meta content="initial-scale=1,width=device-width" name="viewport"><meta charset="utf-8"><style type="text/css">a{color:#000;font-weight:bold;letter-spacing:-0.2px;text-decoration:none;}body,html{background:#fff;color:#000;font-family:sans-serif;font-size:14px;font-weight:normal;line-height:25px;margin:0;overflow-x:hidden;width:100%;}code{background:#f1f1f1;border-radius:4px;box-sizing:border-box;color:#333;display:inline-block;font-family:monospace;font-size:12px;font-weight:normal;height:auto;letter-spacing:-0.2px;line-height:19px;margin:8px 0 17px;overflow-x:scroll;padding:28px 31px 25px;white-space:pre;width:100%}footer{display:inline-block;margin:100px 0;width:100%;}footer ul{display:inline-block;}footer ul{margin:0 0 55px;padding:0;width:100%;}footer ul li{display:inline-block;float:left;line-height:18px;margin:0 15px 5px 0;}footer ul li a{font-size:12px;float:left;}footer .social-media a{display:block;float:left;}footer .social-media a img{height:16px;float:left;}h1,h2,h3{display:inline-block;font-weight:normal;text-transform:uppercase;width:100%;}h1{font-size:23px;letter-spacing:-0.9px;line-height:32px;margin:-6px 0 34px;word-spacing:1.4px;}h2{font-size:19px;letter-spacing:-0.6px;line-height:42px;margin:0 0 24px;padding-top:18px;}h3{font-size:14px;letter-spacing:-0.3px;margin:10px 0 20px;}p{box-sizing:border-box;color:#555;display:inline-block;margin:0 0 17px;width:100%;}p .code{background:#f1f1f1;border-radius:4px;color:#333;display:inline-block;font-family:monospace;font-size:12px;font-weight:normal;letter-spacing:-0.2px;line-height:18px;margin:2px 1px;padding:4px 7px 0;}.icon{float:left;line-height:32px;}.icon img{float:left;height:32px;margin-right:15px;}.no-margin-bottom{margin-bottom:0 !important;}.no-margin-left{margin-left:0 !important;}.no-margin-top{margin-top:0 !important;}.section{margin-bottom:40px;position:relative;}</style></head><body><div style="box-sizing:border-box;margin:0 auto;max-width:720px;padding:0 25px;width:100%;"><header style="display:inline-block;padding:105px 0 70px;width:100%;"><a class="icon" href="/"><img src="/icon.jpg">AbyssResearch</a></header><main style="min-height:280px;width:100%;"><h1>Abyss-Sort-Unstable: The Fastest Non-Auxiliary Sorting Algorithm and Shell Sort Gap Sequence</h1><div class="section"><p class="no-margin-bottom"><a href="https://github.com/abyssresearch/abyss-sort-unstable">Abyss-Sort-Unstable</a> is a bitwise calculation for an optimal sequence of unstable Shell Sort gaps as a substantial improvement to Ciura, Knuth, Sedgewick and Tokuda sequences.</p></div><div class="section"><h2>Library</h2><h3 class="no-margin-top">Source</h3><p class="no-margin-bottom"><a href="https://raw.githubusercontent.com/abyssresearch/abyss-sort-unstable/refs/heads/master/abyss_sort_unstable.c">abyss_sort_unstable.c</a></p><p><a href="https://raw.githubusercontent.com/abyssresearch/abyss-sort-unstable/refs/heads/master/abyss_sort_unstable.h">abyss_sort_unstable.h</a></p><h3>Reference</h3><p><span class="code no-margin-left">abyss_sort_unstable_ascending()</span> is the sorting function in ascending order that accepts the following 2 arguments in left-to-right order.</p><p>1: <span class="code">input_count</span> is the <span class="code">const unsigned long</span> count of elements in the <span class="code">input</span> array.</p><p>2: <span class="code">input</span> is the <span class="code">unsigned long</span> array to sort. The data type is interchangeable with any integral data type and must match the integral data type of <span class="code">input_capture</span>.</p><p>The return value data type is <span class="code">void</span>.</p><p><span class="code no-margin-left">abyss_sort_unstable_descending()</span> is the sorting function in descending order that accepts the following 2 arguments in left-to-right order.</p><p>1: <span class="code">input_count</span> is the <span class="code">const unsigned long</span> count of elements in the <span class="code">input</span> array.</p><p>2: <span class="code">input</span> is the <span class="code">unsigned long</span> array to sort. The data type is interchangeable with any integral data type and must match the integral data type of <span class="code">input_capture</span>.</p><p>The return value data type is <span class="code">void</span>.</p><h3>Example</h3><code>#include &lt;stdio.h&gt;
+#include "abyss_sort_unstable.h"
+
+int main(void) {
+  unsigned long input[10] = {1, 111, 111, 11, 111111, 111, 1, 11, 111111111, 1};
+  unsigned long i = 0;
+
+  abyss_sort_unstable_ascending(10, input);
+
+  while (i != 10) {
+    printf("%u\n", input[i]);
+    i++;
+  }
+
+  abyss_sort_unstable_descending(10, input);
+  i = 0;
+
+  while (i != 10) {
+    printf("%u\n", input[i]);
+    i++;
+  }
+
+  return 0;
+}</code><h3>Requirements</h3><p>It adheres to the C89 standard draft (ISO/IEC 9899:1990), although it's convertible to other programming languages and standards.</p><h3>License</h3><p class="no-margin-bottom">It's free and open source in the public domain. In other words, you can use it freely.</p></div><div class="no-margin-bottom section"><h2>Explanation</h2><p>Abyss-Sort-Unstable both increases the speed and decreases resource usage for all Shell Sort implementations.</p><p>It's the fastest in-place sorting algorithm on average among all sorting algorithms that don't allocate additional memory for input partitions. This applies across all sortable input data types, distributions and sizes.</p><p>It's portable for both 32-bit and 64-bit systems.</p><p>It meets strict compliance, portability and code security requirements.</p><p>It doesn't use modulus, multiplication or division arithmetic operations.</p><p>Before sorting, it doesn't pre-calculate the upper limit with a loop starting from <span class="code">0</span>. Instead, the <span class="code">gap</span> numbers in each sorting instance are dynamically-calculated with inconsistencies among different <span class="code">input_count</span> values.</p><p>Elements are always guaranteed to be sorted within bounds using conditional statements that guarantee the final pass is always a regular insertion sort with a <span class="code">gap</span> value of <span class="code">1</span>.</p><p>After each pass, <span class="code">gap > 3</span> prevents any result of <span class="code">gap</span> calculation from jumping from either <span class="code">3</span> or <span class="code">2</span> to <span class="code">0</span> instead of <span class="code">1</span> based on the following calculation output table.</p><code>Gap   Calculation
+      Result
+
+0     0
+1     0
+2     0
+3     0
+4     1
+5     1
+6     1
+7     1
+8     2
+9     2
+10    2</code><p>Compared to optimized Ciura, Knuth, Sedgewick and Tokuda gap sequences, it's faster with varying <span class="code">input_count</span> values as shown in the following benchmarking table.</p><code>100k 2-Byte Inputs
+Abyss-Sort-Unstable    0.037s   Won
+Ciura                  0.040s   ---
+Knuth                  0.040s   ---
+Sedgewick              0.039s   ---
+Tokuda                 0.040s   ---
+Shell                  0.047s   ---
+
+250k 2-Byte Inputs
+Abyss-Sort-Unstable    0.091s   Won
+Ciura                  0.103s   ---
+Knuth                  0.110s   ---
+Sedgewick              0.101s   ---
+Tokuda                 0.102s   ---
+Shell                  0.126s   ---
+
+500k 2-Byte Inputs
+Abyss-Sort-Unstable    0.191s   Won
+Ciura                  0.211s   ---
+Knuth                  0.243s   ---
+Sedgewick              0.212s   ---
+Tokuda                 0.209s   ---
+Shell                  0.291s   ---
+
+1m 1-Byte Inputs
+Abyss-Sort-Unstable    0.266s   Won
+Ciura                  0.302s   ---
+Knuth                  0.349s   ---
+Sedgewick              0.291s   ---
+Tokuda                 0.304s   ---
+Shell                  0.380s   ---
+
+1m 2-Byte Inputs
+Abyss-Sort-Unstable    0.423s   Won
+Ciura                  0.461s   ---
+Knuth                  0.570s   ---
+Sedgewick              0.453s   ---
+Tokuda                 0.451s   ---
+Shell                  0.634s   ---</code><p>It's faster than every other sequence as well, including Hibbard, Papernov & Stasevich and Pratt.</p><p class="no-margin-bottom">All speed tests are performed locally on a Pixelbook Go M3 using Debian.</p></div></main><footer><div class="no-margin-bottom"><ul><li><a href="/contact/">Contact</a></li><li><a href="/#publications">Publications</a></li></ul><ul class="social-media"><li><a href="https://github.com/abyssresearch" target="_blank"><img src="/icon-github.jpg"></a></li></ul><p style="color:#888;font-size:12px;line-height:19px;margin:0;">All external mentions of AbyssResearch and associated intellectual property may contain either fraudulent claims or outdated content, especially when referencing subject matter not contained herein.</p></div></footer></div></body></html>
