@@ -12,4 +12,126 @@ int main(void) {
   }
 
   return 0;
-}</code><h3>Requirements</h3><p>It adheres to the C99 standard draft (ISO/IEC 9899:1999), although it's convertible to other programming languages and standards.</p><h3>License</h3><p class="no-margin-bottom">It's free and open source in the public domain. In other words, you can use it freely.</p></div><div class="section"><h2>Explanation</h2><p>Abyss-Hash-Tiny hashes keys with high throughput and baseline collision resistance.</p><p>It's the fastest 32-bit, non-auxiliary hashing algorithm that has acceptable statistical quality relevant to non-adversarial hashing with variable input.</p><p>It's portable for both 32-bit and 64-bit systems.</p><p>It meets strict compliance, portability and code security requirements.</p><p>When lower collision counts are required for higher security against adversarial input, a universal <a href="/abyss-oaat/">one-at-a-time hashing algorithm</a> with auxiliary space is a better alternative with a marginal speed tradeoff.</p><p>It doesn't use modulus, multiplication or division arithmetic operations.</p><p>It supports segmented input with unlimited length when the hashing function is modified to accept each previous digest result as a seed.</p><p>Single-threaded, instruction-level parallelism with low-cost subtraction and bitwise instructions work well on a wide range of systems.</p><p>The core hashing loop generates good diffusion and speed as a derivative of the hashing finalization sequence from <a href="/abyss-oaat/">Abyss-OAAT</a>.</p><p>Instead of a XOR with an auxiliary <span class="code">mix_offset</span>, Abyss-Hash-Tiny uses a XOR with input bytes and subtracts a right-rotated value instead of adding a left-rotated value to accommodate for the smaller 8-bit XOR operand length.</p><p>The non-prime initialization value <span class="code">111111</span> is selected based on the random-looking distribution of bits <span class="code">0b11011001000000111</span> at an offset length between 16 and 32 bits.</p><p>The result deprecates the usage of both CDB and DJB2 hashing algorithms by comparison in most practical instances.</p><p>Both CDB and DJB2 have between 100% and 200000% more collisions across all SMHasher tests relevant to generalized, high-throughput, non-adversarial hashing.</p><p>Seed tests in SMHasher are omitted to both discourage using hashing algorithms as PRNGs and prevent collision vulnerabilities from 2³² different initialized states.</p><p>Compared to CDB, the speed's approximately 23% faster on average for small keys and 32% faster on average for large keys.</p><p>Compared to DJB2, the speed's approximately 22% faster on average for small keys and 31% faster on average for large keys.</p><p>Slower 32-bit tiny hashing algorithms with lower collisions are obsoleted by Abyss-OAAT.</p><p>Faster 32-bit tiny hashing algorithms with higher collisions are only suitable for constant input, such as country codes or specific ID formats. For example, removing the <span class="code">mix</span> XOR operand results in faster speed by a small margin with the tradeoff of only hashing pre-tested input sets that aren't expected to change.</p><p class="no-margin-bottom">All speed tests are performed locally on a Pixelbook Go M3 using Debian.</p></div><div class="no-margin-bottom section"><h2>Sponsor</h2><div class="container no-margin-bottom no-margin-top"><a href="https://ghostproxies.com/">GhostProxies</a><img src="/icon-ghostproxies.jpg"><h3>GhostProxies</h3><p>IP-level cyber threat intelligence data for low-latency open network firewall defense.</p></div></div></main><footer><div class="no-margin-bottom"><ul><li><a href="/contact/">Contact</a></li><li><a href="/#publications">Publications</a></li></ul><ul class="social-media"><li><a href="https://github.com/abyssresearch" target="_blank"><img src="/icon-github.jpg"></a></li></ul><p style="color:#888;font-size:12px;line-height:19px;margin:0;">AbyssResearch is a free and open-source project by <a href="https://williamstaffordparsons.github.io/">William Stafford Parsons</a>. All external mentions of AbyssResearch and associated intellectual property may contain either fraudulent claims or outdated content, especially when referencing subject matter not contained herein.</p></div></footer></div></body></html>
+}</code><h3>Requirements</h3><p>It adheres to the C99 standard draft (ISO/IEC 9899:1999), although it's convertible to other programming languages and standards.</p><h3>License</h3><p class="no-margin-bottom">It's free and open source in the public domain. In other words, you can use it freely.</p></div><div class="section"><h2>Explanation</h2><p>Abyss-Hash-Tiny hashes keys with high throughput and baseline collision resistance.</p><p>It's the fastest 32-bit, non-auxiliary hashing algorithm that has acceptable statistical quality relevant to non-adversarial hashing with variable input.</p><p>It's portable for both 32-bit and 64-bit systems.</p><p>It meets strict compliance, portability and code security requirements.</p><p>When lower collision counts are required for higher security against adversarial input, a universal <a href="/abyss-oaat/">one-at-a-time hashing algorithm</a> with auxiliary space is a better alternative with a marginal speed tradeoff.</p><p>It doesn't use modulus, multiplication or division arithmetic operations.</p><p>It supports segmented input with unlimited length when the hashing function is modified to accept each previous digest result as a seed.</p><p>Single-threaded, instruction-level parallelism with low-cost subtraction and bitwise instructions work well on a wide range of systems.</p><p>The core hashing loop generates good diffusion and speed as a derivative of the hashing finalization sequence from <a href="/abyss-oaat/">Abyss-OAAT</a>.</p><p>Instead of a XOR with an auxiliary <span class="code">mix_offset</span>, Abyss-Hash-Tiny uses a XOR with input bytes and subtracts a right-rotated value instead of adding a left-rotated value to accommodate for the smaller 8-bit XOR operand length.</p><p>The non-prime initialization value <span class="code">111111</span> is selected based on the random-looking distribution of bits <span class="code">0b11011001000000111</span> at an offset length between 16 and 32 bits.</p><p>The result deprecates the usage of both CDB and DJB2 hashing algorithms by comparison in most practical instances.</p><p>Both CDB and DJB2 have between 100% and 200000% more collisions across all SMHasher tests relevant to generalized, high-throughput, non-adversarial hashing.</p><p>Seed tests in SMHasher are omitted to both discourage using hashing algorithms as PRNGs and prevent collision vulnerabilities from 2³² different initialized states.</p><p>Avalanche tests in SMHasher are omitted as strict avalanche criterion is only relevant to the analysis of cryptographic hash function output predictability. Furthermore, the following code tests collision counts for truncated digests against each of the 8 bits flipped within a single input byte ranging from 1 to 255 at all positions for all <span class="code">input_count</span> values ranging from 1 to 256.</p><code>#include &lt;stdio.h&gt;
+#include "abyss_hash_tiny.h"
+
+int main(void) {
+  uint8_t input[256];
+  uint32_t result = 0;
+  uint32_t result_flipped = 1;
+  unsigned long bit_collisions_counts[32];
+  unsigned short sparse_byte = 0;
+  unsigned short i = 0;
+  unsigned short j = 0;
+  unsigned short k = 0;
+  unsigned short l = 0;
+  unsigned short m = 0;
+
+  while (i != 32) {
+    bit_collisions_counts[i] = 0;
+    i++;
+  }
+
+  i = 1;
+
+  while (sparse_byte != 16) {
+    while (i != 256) {
+      j = 1;
+
+      while (j != 256) {
+        k = 0;
+
+        while (k != j) {
+          while (l != j) {
+            input[l] = sparse_byte;
+            l++;
+          }
+
+          if (sparse_byte == i) {
+            k = j;
+            l = 0;
+            continue;
+          }
+
+          input[k] = i;
+          result = abyss_hash_tiny(j, input);
+          l = 0;
+
+          while (l != 8) {
+            input[k] = input[k] ^ (1 << l);
+            result_flipped = abyss_hash_tiny(j, input);
+            input[k] = input[k] ^ (1 << l);
+            m = 1;
+
+            while (m != 32) {
+              if (
+                (result & ((2 << m) - 1)) == (result_flipped & ((2 << m) - 1))
+              ) {
+                bit_collisions_counts[m - 1]++;
+              }
+
+              m++;
+            }
+
+            l++;
+            m = 0;
+          }
+
+          k++;
+          l = 0;
+        }
+
+        j++;
+        k = 0;
+      }
+
+      i++;
+    }
+
+    sparse_byte++;
+    i = 1;
+  }
+
+  i = 2;
+  j = 0;
+
+  while (i != 33) {
+    printf("%2u-Bit Segmented Collisions: %9lu\n",
+           i,
+           bit_collisions_counts[i - 2]);
+    i++;
+    j++;
+  }
+
+  return 0;
+}</code><p>The following collision results demonstrate a sufficient collision-based avalanche effect in the worst instance with non-adversarial, non-cryptographic hashing relevance.</p><code> 2-Bit Segmented Collisions: 276638287
+ 3-Bit Segmented Collisions: 143928218
+ 4-Bit Segmented Collisions:  75794009
+ 5-Bit Segmented Collisions:  39515844
+ 6-Bit Segmented Collisions:  20162872
+ 7-Bit Segmented Collisions:   9749448
+ 8-Bit Segmented Collisions:   4061645
+ 9-Bit Segmented Collisions:   2005452
+10-Bit Segmented Collisions:    999136
+11-Bit Segmented Collisions:    501671
+12-Bit Segmented Collisions:    250734
+13-Bit Segmented Collisions:    126892
+14-Bit Segmented Collisions:     65275
+15-Bit Segmented Collisions:     34698
+16-Bit Segmented Collisions:     18717
+17-Bit Segmented Collisions:     10709
+18-Bit Segmented Collisions:      6819
+19-Bit Segmented Collisions:      2876
+20-Bit Segmented Collisions:      1786
+21-Bit Segmented Collisions:      1252
+22-Bit Segmented Collisions:       959
+23-Bit Segmented Collisions:       753
+24-Bit Segmented Collisions:       574
+25-Bit Segmented Collisions:       550
+26-Bit Segmented Collisions:        12
+27-Bit Segmented Collisions:         4
+28-Bit Segmented Collisions:         2
+29-Bit Segmented Collisions:         0
+30-Bit Segmented Collisions:         0
+31-Bit Segmented Collisions:         0
+32-Bit Segmented Collisions:         0</code><p>0 32-bit collisions out of 125 million groups of 8 single-bit flip tests proves the worst instances are rare enough to be considered random occurrences in practical implementations.</p><p>The semi-linear collision increments after each truncation are within an acceptable range based on the probability of collisions at each bit size. For example, 200-300 million collisions in the lower 2 bits are expected out of 1 billion total keys, but only up to a few are expected in the range of 32 to 64 bits.</p><p>Both CDB and DJB2 fail the aforementioned test with unevenly-distributed collision increments.</p><p>Compared to CDB, the speed's approximately 23% faster on average for small keys and 32% faster on average for large keys.</p><p>Compared to DJB2, the speed's approximately 22% faster on average for small keys and 31% faster on average for large keys.</p><p>Slower 32-bit tiny hashing algorithms with lower collisions are obsoleted by Abyss-OAAT.</p><p>Faster 32-bit tiny hashing algorithms with higher collisions are only suitable for constant input, such as country codes or specific ID formats. For example, removing the <span class="code">mix</span> XOR operand results in faster speed by a small margin with the tradeoff of only hashing pre-tested input sets that aren't expected to change.</p><p class="no-margin-bottom">All speed tests are performed locally on a Pixelbook Go M3 using Debian.</p></div><div class="no-margin-bottom section"><h2>Sponsor</h2><div class="container no-margin-bottom no-margin-top"><a href="https://ghostproxies.com/">GhostProxies</a><img src="/icon-ghostproxies.jpg"><h3>GhostProxies</h3><p>IP-level cyber threat intelligence data for low-latency open network firewall defense.</p></div></div></main><footer><div class="no-margin-bottom"><ul><li><a href="/contact/">Contact</a></li><li><a href="/#publications">Publications</a></li></ul><ul class="social-media"><li><a href="https://github.com/abyssresearch" target="_blank"><img src="/icon-github.jpg"></a></li></ul><p style="color:#888;font-size:12px;line-height:19px;margin:0;">AbyssResearch is a free and open-source project by <a href="https://williamstaffordparsons.github.io/">William Stafford Parsons</a>. All external mentions of AbyssResearch and associated intellectual property may contain either fraudulent claims or outdated content, especially when referencing subject matter not contained herein.</p></div></footer></div></body></html>
